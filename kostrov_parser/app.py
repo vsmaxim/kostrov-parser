@@ -8,6 +8,7 @@ BATCH_SIZE = 5
 WAIT_TIME = 60
 
 
+@retry(wait=wait_fixed(60))
 def run():
     db = Database("db/db.sqlite")
     print("items started")

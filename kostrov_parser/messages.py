@@ -8,6 +8,7 @@ from config import TELEGRAM_BOT_TOKEN, TELEGRAM_CHAT_ID
 
 bot = telegram.Bot(token=TELEGRAM_BOT_TOKEN)
 
+@retry(wait=wait_fixed(60))
 def send_message(text: str, link: str, imgs: Iterable[str]):
     if len(imgs) == 0:
         return
