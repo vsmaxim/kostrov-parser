@@ -1,0 +1,18 @@
+import time
+from typing import Iterable
+
+import telegram
+from telegram import InputMediaPhoto
+from tenacity import retry, wait_fixed
+from config import TELEGRAM_BOT_TOKEN, TELEGRAM_CHAT_ID
+
+bot = telegram.Bot(token=TELEGRAM_BOT_TOKEN)
+
+def send_message(text: str, link: str, imgs: Iterable[str]):
+    if len(imgs) == 0:
+        return
+
+    post_text = f"{text}\n\n{link}"
+    imgs_media = [InputMediaPhoto(media=url) for url in imgs if isinstance(url, str)]
+    imgs_media[0].caption = post_text
+    bot.send_media_group(chat_id=TELEGRAM_CHAT_ID, media=imgs_media)
