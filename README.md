@@ -13,7 +13,7 @@ docker run \
   -v $(pwd)/db:/app/db \
   -e "TELEGRAM_CHAT_ID=<YOUR CHAT ID>" \
   -e "TELEGRAM_BOT_TOKEN=<YOUR BOT TOKEN>" \
-  -d --restart always ghcr.io/
+  -d --restart always ghcr.io/vsmaxim/kostrov-parser:latest
 ```
 
 ## Environment parameters
