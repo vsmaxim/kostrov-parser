@@ -1,7 +1,7 @@
 from typing import Iterable
 
-from database import Database
 import requests
+from database import Database
 from schemas import Item
 
 
@@ -26,26 +26,28 @@ def parse_items() -> Iterable[Item]:
         while current_page < total_pages:
             response = session.post(
                 "http://kostrovstore.com/productfolders/productsread",
-                json={"currency": "0", "Id": 2, "Tags": [5], "Page": current_page},
+                json={
+                    "currency": "0",
+                    "Id": 2,
+                    "Tags": [5],
+                    "Page": current_page
+                },
             )
             data = response.json()
 
             total_pages = data["Pagging"]["TotalItems"] // items_per_page
             current_page += 1
 
-            yield from (
-                Item(
-                    id=i["Id"],
-                    name=i["Name"],
-                    active_quantity=i["ActiveQuontity"],
-                    images=[construct_image_link(it) for it in i["ImageIds"]],
-                    price=parse_degenerate_price(i["Price"]),
-                    currency=i["Currency"],
-                    sale_price=parse_degenerate_price(i["SalePrice"]),
-                    item_link=construct_item_link(i["Id"]),
-                )
-                for i in data["Data"]
-            )
+            yield from (Item(
+                id=i["Id"],
+                name=i["Name"],
+                active_quantity=i["ActiveQuontity"],
+                images=[construct_image_link(it) for it in i["ImageIds"]],
+                price=parse_degenerate_price(i["Price"]),
+                currency=i["Currency"],
+                sale_price=parse_degenerate_price(i["SalePrice"]),
+                item_link=construct_item_link(i["Id"]),
+            ) for i in data["Data"])
 
 
 def parse_only_new_items(db: Database) -> Iterable[Item]:

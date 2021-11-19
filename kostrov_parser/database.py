@@ -1,6 +1,6 @@
-from contextlib import contextmanager
 import json
-from sqlite3 import connect, Cursor
+from contextlib import contextmanager
+from sqlite3 import Cursor, connect
 from typing import ContextManager
 
 from schemas import Item
@@ -21,11 +21,9 @@ class Database:
         yield cursor
         cursor.close()
 
-
     def init_db(self):
         with self.cursor() as cur:
-            cur.execute(
-                """
+            cur.execute("""
                 CREATE TABLE IF NOT EXISTS items (
                     id INTEGER,
                     name TEXT,
@@ -36,8 +34,7 @@ class Database:
                     sale_price INTEGER,
                     item_link TEXT
                 );
-                """
-            )
+                """)
 
     def insert_item(self, item: Item):
         with self.cursor() as cur:
@@ -55,12 +52,12 @@ class Database:
                     item.currency,
                     item.sale_price,
                     item.item_link,
-                )
+                ),
             )
 
     def item_exists(self, item: Item) -> bool:
         with self.cursor() as cur:
-            cur.execute("SELECT count(*) FROM items WHERE id = :id", {"id": item.id})
-            count, = cur.fetchone()
+            cur.execute("SELECT count(*) FROM items WHERE id = :id",
+                        {"id": item.id})
+            (count, ) = cur.fetchone()
             return count == 1
-
